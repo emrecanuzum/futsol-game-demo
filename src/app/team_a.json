@@ -1,0 +1,69 @@
+{
+  "name": "Karagümrük",
+  "players": {
+    "gk": {
+      "name": "rias",
+      "skill": 15
+    },
+    "def": [
+      {
+        "name": "bora",
+        "pass": 20,
+        "def": 15
+      },
+      {
+        "name": "emre",
+        "pass": 13,
+        "def": 25
+      },
+      {
+        "name": "mehmet",
+        "pass": 10,
+        "def": 20
+      },
+      {
+        "name": "yusuf",
+        "pass": 25,
+        "def": 12
+      }
+    ],
+    "mid": [
+      {
+        "name": "kaan",
+        "pass": 25,
+        "shoot": 4,
+        "def": 12
+      },
+      {
+        "name": "halil",
+        "pass": 15,
+        "shoot": 10,
+        "def": 12
+      },
+      {
+        "name": "furkan",
+        "pass": 17,
+        "shoot": 12,
+        "def": 12
+      },
+      {
+        "name": "oguz",
+        "pass": 25,
+        "shoot": 12,
+        "def": 12
+      }
+    ],
+    "atk": [
+      {
+        "name": "arda",
+        "pass": 5,
+        "shoot": 22
+      },
+      {
+        "name": "sülo",
+        "pass": 12,
+        "shoot": 19
+      }
+    ]
+  }
+}

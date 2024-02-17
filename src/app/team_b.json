@@ -1,0 +1,69 @@
+{
+  "name": "Beşiktaş",
+  "players": {
+    "gk": {
+      "name": "curtois",
+      "skill": 15
+    },
+    "def": [
+      {
+        "name": "s.boey",
+        "pass": 20,
+        "def": 15
+      },
+      {
+        "name": "r.carlos",
+        "pass": 13,
+        "def": 25
+      },
+      {
+        "name": "v.dijk",
+        "pass": 10,
+        "def": 20
+      },
+      {
+        "name": "m.demiral",
+        "pass": 25,
+        "def": 12
+      }
+    ],
+    "mid": [
+      {
+        "name": "b.fernandez",
+        "pass": 25,
+        "shoot": 4,
+        "def": 12
+      },
+      {
+        "name": "modric",
+        "pass": 15,
+        "shoot": 10,
+        "def": 12
+      },
+      {
+        "name": "a.güler",
+        "pass": 17,
+        "shoot": 12,
+        "def": 12
+      },
+      {
+        "name": "t.kroos",
+        "pass": 25,
+        "shoot": 12,
+        "def": 12
+      }
+    ],
+    "atk": [
+      {
+        "name": "neymar",
+        "pass": 5,
+        "shoot": 22
+      },
+      {
+        "name": "messi",
+        "pass": 12,
+        "shoot": 19
+      }
+    ]
+  }
+}
