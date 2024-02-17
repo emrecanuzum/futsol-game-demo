@@ -116,7 +116,7 @@ export default function Home() {
   return (
     <main className="bg-neutral-500 overflow-hidden h-screen">
       <div className="container mx-auto pt-[10vh] justify-center">
-        <div className="border justify-center mx-auto overflow-auto bg-neutral-50 rounded-lg border-black h-[70vh] w-[30vw]">
+        <div className="border justify-center mx-auto overflow-auto bg-neutral-50 rounded-lg border-black h-[70vh] w-[90vw] md:w-[30vw]">
           <div className="score-part text-center items-center border-b border-black bg-neutral-200">
             <h1 className="text-xl grid grid-cols-2">
               <div className="border-r border-black py-5">
