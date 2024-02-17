@@ -7,7 +7,9 @@ export default function Home() {
   const positions = [0, 1, 2, 3, 4];
   const [currentPosition, setCurrentPosition] = useState(3);
   const [attackingTeam, setAttackingTeam] = useState<any>();
+  const [defendingTeam, setDefendingTeam] = useState<any>();
   const [isFirstPlayed, setIsFirstPlayed] = useState(false);
+  const [minute, setMinute] = useState(0);
 
   const [teamAScore, setTeamAScore] = useState(0);
   const [teamBScore, setTeamBScore] = useState(0);
@@ -17,6 +19,15 @@ export default function Home() {
   const [displayedTeamALogs, setDisplayedTeamALogs] = useState<string[]>([]);
   const [displayedTeamBLogs, setDisplayedTeamBLogs] = useState<string[]>([]);
 
+  useEffect(() => {
+    if (minute >= 95) {
+      // Stop the game
+      // You could also update state here to reflect the game has ended, e.g., setting a "gameOver" state
+      console.log("Match has ended.");
+      return;
+      // Optionally clear the interval here if not done elsewhere
+    }
+  }, [minute]);
   // Effect for Team A Logs
   useEffect(() => {
     if (teamALogs.length > displayedTeamALogs.length) {
@@ -60,6 +71,42 @@ export default function Home() {
     }
   };
 
+  useEffect(() => {
+    if (minute <= 95) {
+      // This effect triggers the midfield game when the position is set to 2
+      if (currentPosition === 2 && attackingTeam) {
+        MidfieldsGame(attackingTeam);
+        setMinute(minute + 5);
+        console.log(minute);
+      }
+    }
+  }, [currentPosition, attackingTeam, minute]);
+
+  useEffect(() => {
+    if (minute <= 95) {
+      // This effect triggers the attackers game when the position is set to 3
+      if ((currentPosition === 3 || currentPosition === 1) && attackingTeam) {
+        AttackersGame(attackingTeam);
+        setMinute(minute + 5);
+        console.log(minute);
+      }
+    }
+  }, [currentPosition, minute, attackingTeam]);
+
+  useEffect(() => {
+    // This effect handles the transition from attacking directly to goalkeeping if the position is 4
+    if ((currentPosition === 4 || currentPosition === 0) && attackingTeam) {
+      GoalkeepersGame(attackingTeam);
+      setMinute(minute + 5);
+      console.log(minute);
+    }
+  }, [currentPosition, attackingTeam]);
+
+  useEffect(() => {
+    setCurrentPosition(2);
+    setMinute(minute + 5);
+  }, [teamAScore, teamBScore]);
+
   const rollDice = (max: any) => Math.floor(Math.random() * (max + 1));
 
   const addLog = (team: any, message: string) => {
@@ -74,7 +121,177 @@ export default function Home() {
     }
   };
 
+  const GoalkeepersGame = (attackingTeam: any) => {
+    const goalkeeper = (attackingTeam === team_a ? team_b : team_a).players.gk;
+    addLog(
+      attackingTeam,
+      `Goalkeeper ${goalkeeper.name} prepares to defend the goal.`
+    );
+
+    // Simulate goalkeeper's attempt to save
+    const saveSuccess = rollDice(goalkeeper.skill) > 9; // Adjust threshold as needed
+    if (saveSuccess) {
+      addLog(
+        attackingTeam,
+        `Goalkeeper ${goalkeeper.name} makes an incredible save!`
+      );
+      // Ball goes to midfield, defending team attacks now
+      setCurrentPosition(attackingTeam === team_a ? 3 : 1);
+      setAttackingTeam(attackingTeam === team_a ? team_b : team_a);
+    } else {
+      addLog(attackingTeam, `${attackingTeam.name} scores!`);
+      // Update the score
+      if (attackingTeam === team_a) {
+        setTeamAScore((prevScore) => prevScore + 1);
+      } else {
+        setTeamBScore((prevScore) => prevScore + 1);
+      }
+      // Restart from midfield with the scoring team attacking
+      setCurrentPosition(2);
+
+      setAttackingTeam(attackingTeam === team_a ? team_b : team_a);
+      addLog(attackingTeam, `${attackingTeam.name} starts the game!`);
+      // Optionally, you can switch the attacking team here
+    }
+  };
+
+  // const DefendersGame = (attackingTeam: any) => {
+  //   const defender =
+  //     attackingTeam.players.def[
+  //       Math.floor(Math.random() * attackingTeam.players.def.length)
+  //     ];
+  //   addLog(
+  //     attackingTeam,
+  //     `Defender ${defender.name} has the ball and is looking to pass.`
+  //   );
+
+  //   // Simulate pass success or failure
+  //   const passSuccess = rollDice(defender.pass) > 9; // Adjust threshold as needed
+  //   if (passSuccess) {
+  //     addLog(
+  //       attackingTeam,
+  //       `${defender.name} makes a successful pass to midfield.`
+  //     );
+  //     setCurrentPosition(2); // Ball is now in midfield
+  //     setAttackingTeam(attackingTeam === team_a ? team_b : team_a); // Switch attacking team
+  //   } else {
+  //     addLog(
+  //       attackingTeam,
+  //       `${defender.name} fails to make a successful pass.`
+  //     );
+  //     setCurrentPosition(currentPosition);
+  //     setAttackingTeam(attackingTeam === team_a ? team_b : team_a);
+
+  //     // Here, you might decide to switch possession or keep the ball with the defending team
+  //   }
+  // };
+
+  const AttackersGame = (attackingTeam: any) => {
+    const defendingTeam = attackingTeam === team_a ? team_b : team_a;
+    const defendingPlayer =
+      defendingTeam.players.def[
+        Math.floor(Math.random() * defendingTeam.players.def.length)
+      ];
+    const attacker =
+      attackingTeam.players.atk[
+        Math.floor(Math.random() * attackingTeam.players.atk.length)
+      ];
+    addLog(
+      attackingTeam,
+      `Attacker ${attacker.name} attempts to breach the defense.`
+    );
+
+    // Simulate attacking success or failure
+    const attackSuccess = rollDice(attacker.shoot) > 12; // Adjust threshold as needed
+    // if (attackSuccess) {
+    //   addLog(attackingTeam, `${attacker.name} shoot great!`);
+    //   setCurrentPosition(4); // Attempt on goal
+    // } else {
+    //   addLog(attackingTeam, `${attacker.name} is stopped by the defense.`);
+
+    //   setCurrentPosition(currentPosition);
+    //   setAttackingTeam(attackingTeam === team_a ? team_a : team_b);
+    // }
+    if (attackSuccess) {
+      addLog(attackingTeam, `${attacker.name} shoot great!`);
+      // setCurrentPosition(4);
+
+      addLog(
+        defendingTeam,
+        `${defendingPlayer.name} trying to stop ${attacker.name}`
+      );
+      const defenseRoll = rollDice(defendingPlayer.def);
+
+      if (defenseRoll <= 10) {
+        addLog(defendingTeam, `defend failed`);
+
+        addLog(attackingTeam, "Shoot goes to the goalkeeper");
+        setCurrentPosition(attackingTeam === team_a ? 4 : 0);
+        GoalkeepersGame(attackingTeam);
+        // AttackersGame(attackingTeam);
+      } else {
+        addLog(
+          defendingTeam,
+          `${defendingPlayer.name} successfully defended the ball!`
+        );
+        addLog(
+          attackingTeam,
+          `Defender ${defendingPlayer.name} has the ball and is looking to pass.`
+        );
+        // Simulate pass success or failure
+        const passSuccess = rollDice(defendingPlayer.pass) > 9; // Adjust threshold as needed
+        if (passSuccess) {
+          setAttackingTeam(attackingTeam === team_a ? team_b : team_a);
+          addLog(
+            attackingTeam,
+            `${defendingPlayer.name} makes a successful pass to midfield.`
+          );
+          setCurrentPosition(2);
+          setAttackingTeam(attackingTeam === team_a ? team_b : team_a); // Switch attacking team
+        } else {
+          setAttackingTeam(attackingTeam === team_a ? team_b : team_a);
+          addLog(
+            attackingTeam,
+            `${defendingPlayer.name} fails to make a pass.`
+          );
+          setAttackingTeam(attackingTeam === team_a ? team_b : team_a);
+          setCurrentPosition(currentPosition);
+
+          // setAttackingTeam(attackingTeam === team_a ? team_b : team_a);
+          AttackersGame(attackingTeam);
+        }
+        // setAttackingTeam(defendingTeam);
+        // setCurrentPosition(
+        //   attackingTeam === team_a ? currentPosition - 1 : currentPosition + 1
+        // );
+      }
+    } else {
+      addLog(attackingTeam, `${attacker.name} is stopped by the defense.`);
+      setAttackingTeam(attackingTeam === team_a ? team_b : team_a);
+      const passSuccess = rollDice(defendingPlayer.pass) > 9; // Adjust threshold as needed
+      if (passSuccess) {
+        addLog(
+          attackingTeam,
+          `${defendingPlayer.name} makes a successful pass to midfield.`
+        );
+        setCurrentPosition(2);
+        setAttackingTeam(attackingTeam === team_a ? team_b : team_a); // Switch attacking team
+      } else {
+        addLog(attackingTeam, `${defendingPlayer.name} fails to make a pass.`);
+        setCurrentPosition(currentPosition);
+
+        setAttackingTeam(attackingTeam === team_a ? team_b : team_a);
+        AttackersGame(attackingTeam);
+      }
+
+      // setCurrentPosition(currentPosition);
+      // setAttackingTeam(attackingTeam === team_a ? team_a : team_b);
+    }
+  };
+
   const MidfieldsGame = (attackingTeam: any) => {
+    setAttackingTeam(attackingTeam);
+    console.log(attackingTeam);
     const defendingTeam = attackingTeam === team_a ? team_b : team_a;
     const attackingPlayer =
       attackingTeam.players.mid[
@@ -103,9 +320,14 @@ export default function Home() {
         addLog(defendingTeam, `defend failed`);
 
         addLog(attackingTeam, "The attack continues...");
+        setCurrentPosition(attackingTeam === team_a ? 3 : 1);
+        AttackersGame(attackingTeam);
       } else {
         addLog(defendingTeam, `${defendingPlayer.name} successfully defended!`);
         setAttackingTeam(defendingTeam);
+        setCurrentPosition(
+          attackingTeam === team_a ? currentPosition - 1 : currentPosition + 1
+        );
       }
     } else {
       addLog(attackingTeam, `${attackingPlayer.name} failed to pass...`);
@@ -116,9 +338,9 @@ export default function Home() {
   return (
     <main className="bg-neutral-500 overflow-hidden h-screen">
       <div className="container mx-auto pt-[10vh] justify-center">
-        <div className="border justify-center mx-auto overflow-auto bg-neutral-50 rounded-lg border-black h-[70vh] w-[90vw] md:w-[30vw]">
+        <div className="border justify-center mx-auto overflow-auto  bg-neutral-50 rounded-lg border-black h-[70vh] w-[90vw] md:w-[40vw]">
           <div className="score-part text-center items-center border-b border-black bg-neutral-200">
-            <h1 className="text-xl grid grid-cols-2">
+            <h1 className="text-xl grid grid-cols-2 ">
               <div className="border-r border-black py-5">
                 {team_a.name}
                 <p className="font-semibold text-4xl">{teamAScore}</p>
@@ -129,7 +351,7 @@ export default function Home() {
               </div>
             </h1>
           </div>
-          <div className="game-part w-full border-b border-black h-[80%]">
+          <div className="game-part w-full h-[80%]">
             <div className="grid grid-cols-2 w-full h-full">
               <div className="team_a-side border-r border-black h-full">
                 {displayedTeamALogs.map((log, index) => (
