@@ -8,22 +8,22 @@
     "def": [
       {
         "name": "bora",
-        "pass": 20,
+        "pass": 50,
         "def": 15
       },
       {
         "name": "emre",
-        "pass": 13,
+        "pass": 43,
         "def": 25
       },
       {
         "name": "mehmet",
-        "pass": 10,
+        "pass": 24,
         "def": 20
       },
       {
         "name": "yusuf",
-        "pass": 25,
+        "pass": 30,
         "def": 12
       }
     ],

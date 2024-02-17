@@ -35,7 +35,7 @@ export default function Home() {
         setDisplayedTeamALogs(
           teamALogs.slice(0, displayedTeamALogs.length + 1)
         );
-      }, 1000);
+      }, 100);
       return () => clearTimeout(timerId);
     }
   }, [teamALogs, displayedTeamALogs]);
@@ -47,7 +47,7 @@ export default function Home() {
         setDisplayedTeamBLogs(
           teamBLogs.slice(0, displayedTeamBLogs.length + 1)
         );
-      }, 1000);
+      }, 100);
       return () => clearTimeout(timerId);
     }
   }, [teamBLogs, displayedTeamBLogs]);
@@ -79,6 +79,8 @@ export default function Home() {
         setMinute(minute + 5);
         console.log(minute);
       }
+    } else {
+      addLog(attackingTeam, `Match ended`);
     }
   }, [currentPosition, attackingTeam, minute]);
 
@@ -90,6 +92,8 @@ export default function Home() {
         setMinute(minute + 5);
         console.log(minute);
       }
+    } else {
+      addLog(attackingTeam, `Match ended`);
     }
   }, [currentPosition, minute, attackingTeam]);
 
@@ -123,6 +127,12 @@ export default function Home() {
 
   const GoalkeepersGame = (attackingTeam: any) => {
     const goalkeeper = (attackingTeam === team_a ? team_b : team_a).players.gk;
+
+    const defendingTeam = attackingTeam === team_a ? team_b : team_a;
+    const defendingPlayer =
+      defendingTeam.players.def[
+        Math.floor(Math.random() * defendingTeam.players.def.length)
+      ];
     addLog(
       attackingTeam,
       `Goalkeeper ${goalkeeper.name} prepares to defend the goal.`
@@ -136,7 +146,32 @@ export default function Home() {
         `Goalkeeper ${goalkeeper.name} makes an incredible save!`
       );
       // Ball goes to midfield, defending team attacks now
+      setAttackingTeam(defendingTeam);
+      addLog(
+        defendingTeam,
+        `Defender ${defendingPlayer.name} has the ball and is looking to pass.`
+      );
+      // Simulate pass success or failure
+      const passSuccess = rollDice(defendingPlayer.pass) > 9; // Adjust threshold as needed
+      if (passSuccess) {
+        setAttackingTeam(attackingTeam === team_a ? team_b : team_a);
+        addLog(
+          attackingTeam === team_a ? team_b : team_a,
+          `${defendingPlayer.name} makes a successful pass to midfield.`
+        );
+        setCurrentPosition(2);
+        // setAttackingTeam(attackingTeam === team_a ? team_b : team_a); // Switch attacking team
+      } else {
+        setAttackingTeam(attackingTeam === team_a ? team_a : team_b);
+        addLog(defendingTeam, `${defendingPlayer.name} fails to make a pass.`);
+        setAttackingTeam(attackingTeam === team_a ? team_b : team_a);
+        setCurrentPosition(currentPosition);
+
+        // setAttackingTeam(attackingTeam === team_a ? team_b : team_a);
+        AttackersGame(attackingTeam);
+      }
       setCurrentPosition(attackingTeam === team_a ? 3 : 1);
+
       setAttackingTeam(attackingTeam === team_a ? team_b : team_a);
     } else {
       addLog(attackingTeam, `${attackingTeam.name} scores!`);
@@ -150,7 +185,10 @@ export default function Home() {
       setCurrentPosition(2);
 
       setAttackingTeam(attackingTeam === team_a ? team_b : team_a);
-      addLog(attackingTeam, `${attackingTeam.name} starts the game!`);
+      addLog(
+        attackingTeam === team_a ? team_b : team_a,
+        `${(attackingTeam === team_a ? team_b : team_a).name} starts the game!`
+      );
       // Optionally, you can switch the attacking team here
     }
   };
@@ -224,7 +262,6 @@ export default function Home() {
 
       if (defenseRoll <= 10) {
         addLog(defendingTeam, `defend failed`);
-
         addLog(attackingTeam, "Shoot goes to the goalkeeper");
         setCurrentPosition(attackingTeam === team_a ? 4 : 0);
         GoalkeepersGame(attackingTeam);
@@ -234,8 +271,9 @@ export default function Home() {
           defendingTeam,
           `${defendingPlayer.name} successfully defended the ball!`
         );
+        setAttackingTeam(defendingTeam);
         addLog(
-          attackingTeam,
+          defendingTeam,
           `Defender ${defendingPlayer.name} has the ball and is looking to pass.`
         );
         // Simulate pass success or failure
@@ -243,15 +281,15 @@ export default function Home() {
         if (passSuccess) {
           setAttackingTeam(attackingTeam === team_a ? team_b : team_a);
           addLog(
-            attackingTeam,
+            attackingTeam === team_a ? team_b : team_a,
             `${defendingPlayer.name} makes a successful pass to midfield.`
           );
           setCurrentPosition(2);
-          setAttackingTeam(attackingTeam === team_a ? team_b : team_a); // Switch attacking team
+          // setAttackingTeam(attackingTeam === team_a ? team_b : team_a); // Switch attacking team
         } else {
-          setAttackingTeam(attackingTeam === team_a ? team_b : team_a);
+          setAttackingTeam(attackingTeam === team_a ? team_a : team_b);
           addLog(
-            attackingTeam,
+            defendingTeam,
             `${defendingPlayer.name} fails to make a pass.`
           );
           setAttackingTeam(attackingTeam === team_a ? team_b : team_a);
@@ -271,13 +309,13 @@ export default function Home() {
       const passSuccess = rollDice(defendingPlayer.pass) > 9; // Adjust threshold as needed
       if (passSuccess) {
         addLog(
-          attackingTeam,
+          defendingTeam,
           `${defendingPlayer.name} makes a successful pass to midfield.`
         );
         setCurrentPosition(2);
         setAttackingTeam(attackingTeam === team_a ? team_b : team_a); // Switch attacking team
       } else {
-        addLog(attackingTeam, `${defendingPlayer.name} fails to make a pass.`);
+        addLog(defendingTeam, `${defendingPlayer.name} fails to make a pass.`);
         setCurrentPosition(currentPosition);
 
         setAttackingTeam(attackingTeam === team_a ? team_b : team_a);
@@ -338,7 +376,7 @@ export default function Home() {
   return (
     <main className="bg-neutral-500 overflow-hidden h-screen">
       <div className="container mx-auto pt-[10vh] justify-center">
-        <div className="border justify-center mx-auto overflow-auto  bg-neutral-50 rounded-lg border-black h-[70vh] w-[90vw] md:w-[40vw]">
+        <div className="border justify-center mx-auto overflow-auto  bg-neutral-50 rounded-lg border-black h-[70vh] w-[90vw] md:w-[60vw]">
           <div className="score-part text-center items-center border-b border-black bg-neutral-200">
             <h1 className="text-xl grid grid-cols-2 ">
               <div className="border-r border-black py-5">
