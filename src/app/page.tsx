@@ -15,19 +15,20 @@ export default function Home() {
   const [teamBScore, setTeamBScore] = useState(0);
   const [teamALogs, setTeamALogs] = useState<string[]>([]);
   const [teamBLogs, setTeamBLogs] = useState<string[]>([]);
+  const [minuteLogs, setMinuteLogs] = useState(0);
 
   const [displayedTeamALogs, setDisplayedTeamALogs] = useState<string[]>([]);
   const [displayedTeamBLogs, setDisplayedTeamBLogs] = useState<string[]>([]);
 
   useEffect(() => {
-    if (minute >= 95) {
+    if (minute >= 90 && teamAScore != teamBScore) {
       // Stop the game
       // You could also update state here to reflect the game has ended, e.g., setting a "gameOver" state
       console.log("Match has ended.");
       return;
       // Optionally clear the interval here if not done elsewhere
     }
-  }, [minute]);
+  }, [minute, teamAScore, teamBScore]);
   // Effect for Team A Logs
   useEffect(() => {
     if (teamALogs.length > displayedTeamALogs.length) {
@@ -61,6 +62,10 @@ export default function Home() {
     }
   }, []);
 
+  useEffect(() => {
+    setMinuteLogs(minute);
+  }, [minute]);
+
   const decideStart = async () => {
     if (!isFirstPlayed) {
       const selectedTeam = Math.random() < 0.5 ? team_a : team_b;
@@ -72,7 +77,7 @@ export default function Home() {
   };
 
   useEffect(() => {
-    if (minute <= 95) {
+    if (minute <= 90) {
       // This effect triggers the midfield game when the position is set to 2
       if (currentPosition === 2 && attackingTeam) {
         MidfieldsGame(attackingTeam);
@@ -85,7 +90,7 @@ export default function Home() {
   }, [currentPosition, attackingTeam, minute]);
 
   useEffect(() => {
-    if (minute <= 95) {
+    if (minute <= 90) {
       // This effect triggers the attackers game when the position is set to 3
       if ((currentPosition === 3 || currentPosition === 1) && attackingTeam) {
         AttackersGame(attackingTeam);
@@ -112,16 +117,16 @@ export default function Home() {
   }, [teamAScore, teamBScore]);
 
   const rollDice = (max: any) => Math.floor(Math.random() * (max + 1));
-
+  const empty_message = ".  ";
   const addLog = (team: any, message: string) => {
     if (team === team_a) {
       setTeamALogs((prevLogs) => [...prevLogs, message]);
       // Add an empty log for team B to maintain alignment
-      setTeamBLogs((prevLogs) => [...prevLogs, "-"]);
+      setTeamBLogs((prevLogs) => [...prevLogs, empty_message]);
     } else {
       setTeamBLogs((prevLogs) => [...prevLogs, message]);
       // Add an empty log for team A to maintain alignment
-      setTeamALogs((prevLogs) => [...prevLogs, "-"]);
+      setTeamALogs((prevLogs) => [...prevLogs, empty_message]);
     }
   };
 
@@ -160,6 +165,7 @@ export default function Home() {
           `${defendingPlayer.name} makes a successful pass to midfield.`
         );
         setCurrentPosition(2);
+        MidfieldsGame(attackingTeam);
         // setAttackingTeam(attackingTeam === team_a ? team_b : team_a); // Switch attacking team
       } else {
         setAttackingTeam(attackingTeam === team_a ? team_a : team_b);

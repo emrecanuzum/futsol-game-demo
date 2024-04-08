@@ -1,53 +1,53 @@
 {
-  "name": "Beşiktaş",
+  "name": "Team B",
   "players": {
     "gk": {
-      "name": "curtois",
+      "name": "Goalkeeper",
       "skill": 15
     },
     "def": [
       {
-        "name": "s.boey",
+        "name": "Defender 1",
         "pass": 20,
         "def": 15
       },
       {
-        "name": "r.carlos",
+        "name": "Defender 2",
         "pass": 13,
         "def": 25
       },
       {
-        "name": "v.dijk",
+        "name": "Defender 3",
         "pass": 10,
         "def": 20
       },
       {
-        "name": "m.demiral",
+        "name": "Defender 4",
         "pass": 25,
         "def": 12
       }
     ],
     "mid": [
       {
-        "name": "b.fernandez",
+        "name": "Midfielder 1",
         "pass": 25,
         "shoot": 4,
         "def": 12
       },
       {
-        "name": "modric",
+        "name": "Midfielder 2",
         "pass": 15,
         "shoot": 10,
         "def": 12
       },
       {
-        "name": "a.güler",
+        "name": "Midfielder 3",
         "pass": 17,
         "shoot": 12,
         "def": 12
       },
       {
-        "name": "t.kroos",
+        "name": "Midfielder 4",
         "pass": 25,
         "shoot": 12,
         "def": 12
@@ -55,12 +55,12 @@
     ],
     "atk": [
       {
-        "name": "neymar",
+        "name": "Attacker 1",
         "pass": 5,
         "shoot": 22
       },
       {
-        "name": "messi",
+        "name": "Attacker 2",
         "pass": 12,
         "shoot": 19
       }

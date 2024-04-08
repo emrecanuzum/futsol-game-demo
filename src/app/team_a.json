@@ -1,53 +1,53 @@
 {
-  "name": "Karagümrük",
+  "name": "Team A",
   "players": {
     "gk": {
-      "name": "rias",
+      "name": "GoalKeeper",
       "skill": 15
     },
     "def": [
       {
-        "name": "bora",
+        "name": "Defender 1",
         "pass": 50,
         "def": 15
       },
       {
-        "name": "emre",
+        "name": "Defender 2",
         "pass": 43,
         "def": 25
       },
       {
-        "name": "mehmet",
+        "name": "Defender 3",
         "pass": 24,
         "def": 20
       },
       {
-        "name": "yusuf",
+        "name": "Defender 4",
         "pass": 30,
         "def": 12
       }
     ],
     "mid": [
       {
-        "name": "kaan",
+        "name": "Midfielder 1",
         "pass": 25,
         "shoot": 4,
         "def": 12
       },
       {
-        "name": "halil",
+        "name": "Midfielder 2",
         "pass": 15,
         "shoot": 10,
         "def": 12
       },
       {
-        "name": "furkan",
+        "name": "Midfielder 3",
         "pass": 17,
         "shoot": 12,
         "def": 12
       },
       {
-        "name": "oguz",
+        "name": "Midfielder 4",
         "pass": 25,
         "shoot": 12,
         "def": 12
@@ -55,12 +55,12 @@
     ],
     "atk": [
       {
-        "name": "arda",
+        "name": "Attacker 1",
         "pass": 5,
         "shoot": 22
       },
       {
-        "name": "sülo",
+        "name": "Attacker 2",
         "pass": 12,
         "shoot": 19
       }
